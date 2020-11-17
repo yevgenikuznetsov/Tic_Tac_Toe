@@ -7,11 +7,12 @@ class Mark(Enum):
     O = 4
     EMPTY = 8
 
-
+#when click on ecupied cell, undo delets one cell
+#when you exit game board, you cant create new one
 class TicTacBoard:
 
-    def __init__(self, gameWindow):
-
+    def __init__(self, gameWindow,game_mode):
+        self.game_mode = game_mode
         self.b1 = Button(gameWindow, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda: self.b_click(self.b1, 0, 0))
         self.b2 = Button(gameWindow, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda: self.b_click(self.b2, 0 ,1))
         self.b3 = Button(gameWindow, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda: self.b_click(self.b3, 0 ,2))
@@ -21,7 +22,6 @@ class TicTacBoard:
         self.b7 = Button(gameWindow, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda: self.b_click(self.b7, 2, 0))
         self.b8 = Button(gameWindow, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda: self.b_click(self.b8, 2, 1))
         self.b9 = Button(gameWindow, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda: self.b_click(self.b9, 2, 2))
-
         self.newGame = Button(gameWindow, text="New Game", font=("Helvetica", 10),anchor="n", padx=2, pady=10, bg="SystemButtonFace", command=lambda: self.playNewGame())
         self.undoB = Button(gameWindow, text="Undo", font=("Helvetica", 10), padx=10,anchor="n", pady=10,bg="SystemButtonFace", command=lambda: self.undo())
 
@@ -31,7 +31,7 @@ class TicTacBoard:
         self.turnToPlay = Mark.X
         self.moves = []
         self.count = 0
-
+        #undo - only one step
         self.numOfUndoFirst = 0
         self.numOfUndoSecond = 0
 
@@ -50,7 +50,7 @@ class TicTacBoard:
                 self.deleteStep(lastMove[0], lastMove[1], lastMove[2])
                 lastMove = self.moves.pop()
                 self.deleteStep(lastMove[0], lastMove[1], lastMove[2])
-
+                #it should be O turn
                 self.turnToPlay = Mark.X
                 self.numOfUndoSecond += 1
 
@@ -128,7 +128,6 @@ class TicTacBoard:
         self.b9.config(state="disable")
 
     def playNewGame(self):
-
         self.b1.config(text=" ", state="normal")
         self.b2.config(text=" ", state="normal")
         self.b3.config(text=" ", state="normal")
@@ -139,6 +138,8 @@ class TicTacBoard:
         self.b8.config(text=" ", state="normal")
         self.b9.config(text=" ", state="normal")
 
+        # like the init method - method: init_games_attributes
+
         self.boardMatrix = [[Mark.EMPTY.value for x in range(3)] for y in range(3)]
         self.count = 0
         self.turnToPlay = Mark.X
@@ -146,9 +147,10 @@ class TicTacBoard:
         self.numOfUndoSecond = 0
         self.numOfUndoFirst = 0
 
-    def b_click(self, b, row, col):
-
-        self.moves.append([b,row,col,self.get_turn_to_play()])
+    # def two_player_mode_click(self, b, row, col):
+    #     none
+    def one_player_mode_click(self, b, row, col):
+        self.moves.append([b, row, col, self.get_turn_to_play()])
 
         if b["text"] == " " and self.get_turn_to_play() == Mark.X:
             b["text"] = "X"
@@ -161,11 +163,9 @@ class TicTacBoard:
             self.turnToPlay = Mark.X
             self.count += 1
         else:
-             messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
+            messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
+        # need to add tie
 
-        if self.count == 9:
-            messagebox.showerror("Tic Tac Toe", "There is no winner")
-            self.turnOffButtons()
 
         if self.checkIfWin(row, col):
             if self.get_turn_to_play() == Mark.X:
@@ -174,3 +174,14 @@ class TicTacBoard:
             else:
                 messagebox.showerror("Tic Tac Toe", "X Win")
                 self.turnOffButtons()
+
+        if self.count == 9:
+            messagebox.showerror("Tic Tac Toe", "There is no winner")
+            self.turnOffButtons()
+        # TODO why do we need b and row/col we can switch to b["row"], b["col"]
+    def b_click(self, b, row, col):
+        if self.game_mode==2:
+            self.one_player_mode_click(b, row, col)
+        else:
+            self.one_player_mode_click(b, row, col)
+
