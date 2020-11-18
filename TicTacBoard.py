@@ -1,6 +1,7 @@
 from enum import Enum
 from tkinter import *
 from tkinter import messagebox
+from MinimaxAlphaBetaAgent import *
 
 class Mark(Enum):
     X = 2
@@ -148,9 +149,14 @@ class TicTacBoard:
         self.numOfUndoSecond = 0
         self.numOfUndoFirst = 0
 
+<<<<<<< HEAD
+    def two_player_mode_click(self, b, row, col):
+        self.moves.append([b, row, col, self.get_turn_to_play()])
+=======
     # def two_player_mode_click(self, b, row, col):
     #     none
     def one_player_mode_click(self, b, row, col):
+>>>>>>> 30b3b734f2887cd8175bccc80bed982bd5aa7c1c
 
         if b["text"] == " " and self.get_turn_to_play() == Mark.X:
             b["text"] = "X"
@@ -176,7 +182,6 @@ class TicTacBoard:
             messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
         # need to add tie
 
-
         if self.checkIfWin(row, col):
             if self.get_turn_to_play() == Mark.X:
                 messagebox.showerror("Tic Tac Toe", "O Win")
@@ -188,9 +193,24 @@ class TicTacBoard:
         if self.count == 9:
             messagebox.showerror("Tic Tac Toe", "There is no winner")
             self.turnOffButtons()
+
+
+    def one_player_mode_click(self, b, row, col):
+        self.two_player_mode_click(b, row, col)
+        move = self.agent.choose(self.model, False)[0]
+        move-=1
+        AIrow=row/3
+        AIcol=col%3
+        self.moves.append([b, AIrow,AIcol, self.get_turn_to_play()])
+        b["text"] = "O"
+        self.boardMatrix[AIrow][AIcol] = 'O'
+        self.turnToPlay = Mark.X
+        self.count += 1
+
         # TODO why do we need b and row/col we can switch to b["row"], b["col"]
     def b_click(self, b, row, col):
-        if self.game_mode==2:
-            self.one_player_mode_click(b, row, col)
+        if self.game_mode == 2:
+            self.two_player_mode_click(b, row, col)
         else:
             self.one_player_mode_click(b, row, col)
+
