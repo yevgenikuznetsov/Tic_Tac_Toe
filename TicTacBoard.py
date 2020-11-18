@@ -151,7 +151,44 @@ class TicTacBoard:
 
 
     def two_player_mode_click(self, b, row, col):
-        self.moves.append([b, row, col, self.get_turn_to_play()])
+
+        if b["text"] == " " and self.get_turn_to_play() == Mark.X:
+            b["text"] = "X"
+            self.boardMatrix[row][col] = 'X'
+
+            self.moves.append([b, row, col])
+
+            self.turnToPlay = Mark.O
+            self.playerTurnLable.config(text="O's turn")
+            self.count += 1
+
+        elif b["text"] == " " and self.get_turn_to_play() == Mark.O:
+            b["text"] = "O"
+            self.boardMatrix[row][col] = 'O'
+
+            self.moves.append([b, row, col])
+
+            self.turnToPlay = Mark.X
+            self.playerTurnLable.config(text="X's turn")
+            self.count += 1
+
+        else:
+            messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
+        # need to add tie
+
+
+        if self.checkIfWin(row, col):
+            if self.get_turn_to_play() == Mark.X:
+                messagebox.showerror("Tic Tac Toe", "O Win")
+                self.turnOffButtons()
+            else:
+                messagebox.showerror("Tic Tac Toe", "X Win")
+                self.turnOffButtons()
+
+        if self.count == 9:
+            messagebox.showerror("Tic Tac Toe", "There is no winner")
+            self.turnOffButtons()
+        # TODO why do we need b and row/col we can switch to b["row"], b["col"]
 
     def one_player_mode_click(self, b, row, col):
         self.two_player_mode_click(b, row, col)
