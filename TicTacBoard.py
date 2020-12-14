@@ -92,17 +92,6 @@ class TicTacBoard:
         for i in range(3):
             for j in range(3):
                 self.buttonMatrix[i][j].button.grid(row =i, column=j)
-        # self.b1.grid(row =0, column=0)
-        # self.b2.grid(row=0, column=1)
-        # self.b3.grid(row=0, column=2)
-        #
-        # self.b4.grid(row=1, column=0)
-        # self.b5.grid(row=1, column=1)
-        # self.b6.grid(row=1, column=2)
-        #
-        # self.b7.grid(row=2, column=0)
-        # self.b8.grid(row=2, column=1)
-        # self.b9.grid(row=2, column=2)
 
         self.newGame.grid(row=3, column=0)
         self.playerTurnLable.grid(row=3, column=1)
@@ -141,36 +130,19 @@ class TicTacBoard:
         self.turnToPlay = Mark.X if self.turnToPlay is Mark.O else Mark.O
 
     def turnOffButtons(self):
-
-        self.b1.config(state="disable")
-        # self.b2.config(state="disable")
-        # self.b3.config(state="disable")
-        # self.b4.config(state="disable")
-        # self.b5.config(state="disable")
-        # self.b6.config(state="disable")
-        # self.b7.config(state="disable")
-        # self.b8.config(state="disable")
-        # self.b9.config(state="disable")
-
+        for row in range(3):
+            for col in range(3):
+                self.buttonMatrix[row][col].button.config(state="disable")
     def playNewGame(self):
-        self.b1.config(text=" ", state="normal")
-        # self.b2.config(text=" ", state="normal")
-        # self.b3.config(text=" ", state="normal")
-        # self.b4.config(text=" ", state="normal")
-        # self.b5.config(text=" ", state="normal")
-        # self.b6.config(text=" ", state="normal")
-        # self.b7.config(text=" ", state="normal")
-        # self.b8.config(text=" ", state="normal")
-        # self.b9.config(text=" ", state="normal")
+        for row in range(3):
+            for col in range(3):
+                self.buttonMatrix[row][col].button.config(text=" ", state="normal")
+                self.buttonMatrix[row][col].mark = Mark.EMPTY
+        self.count = 0
+        self.turnToPlay = Mark.X
+        self.numOfUndoSecond = 0
+        self.numOfUndoFirst = 0
 
-        # like the init method - method: init_games_attributes
-
-        # self.boardMatrix = [[Mark.EMPTY.value for x in range(3)] for y in range(3)]
-        # self.count = 0
-        # self.turnToPlay = Mark.X
-        #
-        # self.numOfUndoSecond = 0
-        # self.numOfUndoFirst = 0
 
 
     def two_player_mode_click_dummy(self, row, col):
