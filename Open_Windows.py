@@ -15,7 +15,6 @@ windowsHandler = WindowsHandler()
 playWithComp = Button(mainWindow, text = "PLAY WITH COMPUTER", padx = 25, pady = 14,command = lambda:  windowsHandler.openNewWindow(ONE_PLAYER_MODE))
 playWithOther = Button(mainWindow, text = "PLAY WITH OTHER PLAYER", padx = 25, pady = 14,command =lambda: windowsHandler.openNewWindow(TWO_PLAYERS_MODE))
 
-
 playWithComp.grid(row=1,column=0, padx=8, pady=10)
 playWithOther.grid(row=1,column=1)
 

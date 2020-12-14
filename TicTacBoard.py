@@ -12,7 +12,7 @@ class TicTacBoard:
         self.game_mode = game_mode
 
         self.newGame = Button(gameWindow, text="New Game", font=("Helvetica", 10),anchor="n", padx=2, pady=10, bg="SystemButtonFace", command=lambda: self.playNewGame())
-        self.undoB = Button(gameWindow, text="Undo", font=("Helvetica", 10), padx=10,anchor="n", pady=10,bg="SystemButtonFace", command=lambda: self.undo())
+        self.undoB = Button(gameWindow, text="Undo", font=("Helvetica", 10), padx=10,anchor="n", pady=10,bg="SystemButtonFace", command=lambda: self.undoPerson(game_mode) ,state="disable")
         self.playerTurnLable = Label(gameWindow, text="X's turn")
 
 
@@ -32,58 +32,60 @@ class TicTacBoard:
         self.numOfUndoFirst = 0
         self.numOfUndoSecond = 0
         self.agent = MinimaxAlphaBetaAgent()
-    def undoBoard(self):
+
+    def undo(self, mark):
+        lastMove = self.moves.pop()
+        self.deleteStep(lastMove)
+        self.turnToPlay = mark
+
+    def undoBoardAI(self):
         self.count -= 1
 
         if self.get_turn_to_play() == Mark.X:
-
-            lastMove = self.moves.pop()
-            self.deleteStepB(lastMove)
-
-            # it should be O turn
-            self.turnToPlay = Mark.O
-            self.playerTurnLable.config(text="O's turn")
+            self.undo(Mark.O)
 
         else:
-            lastMove = self.moves.pop()
-            self.deleteStepB(lastMove)
+            self.undo(Mark.X)
 
-            self.turnToPlay = Mark.X
-            self.playerTurnLable.config(text="X's turn")
-    def undo(self):
+    def undoPerson(self, state):
 
         self.count -= 1
+        if self.count == 0:
+            self.undoB.config(state="disable")
 
         if self.get_turn_to_play() == Mark.X:
-            if self.numOfUndoFirst >= 3:
-                messagebox.showerror("Tic Tac Toe", "You can't do undo more than 3 times")
-            else:
-                lastMove = self.moves.pop()
-                self.deleteStep(lastMove)
+            if self.game_mode == 2:
+                if self.numOfUndoFirst >= 3:
+                    messagebox.showerror("Tic Tac Toe", "You can't do undo more than 3 times")
+                    self.undoB.config(state="disable")
+                else:
+                    self.undo(Mark.O)
 
-                #it should be O turn
-                self.turnToPlay = Mark.O
-                self.playerTurnLable.config(text="O's turn")
-                self.numOfUndoFirst += 1
+                    self.playerTurnLable.config(text="O's turn")
+                    self.numOfUndoFirst += 1
+            else:
+                if self.numOfUndoFirst >= 1:
+                    messagebox.showerror("Tic Tac Toe", "You can't do undo more than 1 times")
+                    self.undoB.config(state="disable")
+                else:
+                    self.undo(Mark.O)
+                    self.undo(Mark.X)
+
+                    self.playerTurnLable.config(text="X's turn")
+                    self.numOfUndoFirst += 1
 
         else:
             if self.numOfUndoSecond >= 3:
                 messagebox.showerror("Tic Tac Toe", "You can't do undo more than 3 times")
             else:
-                lastMove = self.moves.pop()
-                self.deleteStep(lastMove)
+                self.undo(Mark.X)
 
-                self.turnToPlay = Mark.X
                 self.playerTurnLable.config(text="X's turn")
                 self.numOfUndoSecond += 1
-
 
     def deleteStep(self, lastMove):
         self.buttonMatrix[lastMove[0]][lastMove[1]].button.config(text=" ")
         self.buttonMatrix[lastMove[0]][lastMove[1]].mark = Mark.EMPTY
-    def deleteStepB(self, lastMove):
-        self.buttonMatrix[lastMove[0]][lastMove[1]].mark = Mark.EMPTY
-
 
     def get_turn_to_play(self):
         return self.turnToPlay
@@ -112,6 +114,11 @@ class TicTacBoard:
                 return 10
             else:
                 return -10
+        if self.buttonMatrix[0][2].mark == self.buttonMatrix[1][1].mark == self.buttonMatrix[2][0].mark and self.buttonMatrix[0][2].mark != Mark.EMPTY:
+            if self.get_turn_to_play() == Mark.X:
+                return 10
+            else:
+                return -10
         for i in range(0, 3):
             if self.buttonMatrix[i][0].mark == self.buttonMatrix[i][1].mark == self.buttonMatrix[i][2].mark and self.buttonMatrix[i][0].mark !=Mark.EMPTY:
                 if self.get_turn_to_play() == Mark.X:
@@ -123,7 +130,6 @@ class TicTacBoard:
                     return 10
                 else:
                     return -10
-
         return 0
 
     def __switch_players(self):
@@ -138,6 +144,10 @@ class TicTacBoard:
             for col in range(3):
                 self.buttonMatrix[row][col].button.config(text=" ", state="normal")
                 self.buttonMatrix[row][col].mark = Mark.EMPTY
+
+        self.undoB.config(state="disable")
+        self.playerTurnLable.config(text="X's turn")
+
         self.count = 0
         self.turnToPlay = Mark.X
         self.numOfUndoSecond = 0
@@ -155,6 +165,7 @@ class TicTacBoard:
                 self.moves.append([row, col])
 
                 self.turnToPlay = Mark.O
+
                 self.playerTurnLable.config(text="O's turn")
                 self.count += 1
 
@@ -199,14 +210,18 @@ class TicTacBoard:
             messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
         # need to add tie
 
-
     def one_player_mode_click(self,  row, col):
         self.two_player_mode_click(row, col)
+        self.undoB.config(state="normal")
         move = self.agent.choose(self,9-self.count, True)[0]
         self.two_player_mode_click(move[0],move[1])
+
     def b_click(self, row, col):
         if self.game_mode == 2:
             self.two_player_mode_click( row, col)
+
+            self.undoB.config(state="normal")
+
             if self.checkIfWin() != 0:
                 if self.get_turn_to_play() == Mark.X:
                     messagebox.showerror("Tic Tac Toe", "O Win")

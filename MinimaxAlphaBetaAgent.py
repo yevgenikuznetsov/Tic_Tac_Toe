@@ -26,7 +26,7 @@ class MinimaxAlphaBetaAgent():
             player = Mark.X if isMax else Mark.O
             state.two_player_mode_click_dummy(row,col)
             value = s, self.minimax_alpha_beta(state, depth - 1, alpha, beta, not isMax)[1]
-            state.undoBoard()
+            state.undoBoardAI()
             if isMax:
                 bestValue = max(bestValue, value, key=lambda i: i[1])
                 alpha = max(alpha, bestValue[1])
