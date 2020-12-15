@@ -42,9 +42,5 @@ class MinimaxAlphaBetaAgent():
         return bestValue
 
     def choose(self, state,depth, player):
-        # tmpState = TicTacBoard()
-        # tmpState.buttonMatrix = state.buttonMatrix
-        # tmpState.count = state.count
-        # tmpState.turnToPlay = state.turnToPlay
         return self.minimax_alpha_beta(state, depth, -inf, inf, player)
 
