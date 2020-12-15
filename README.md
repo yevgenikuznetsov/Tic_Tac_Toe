@@ -1,5 +1,6 @@
 # tic_tac_toe
 The classic game with two modes: against another player or the compute.
+
 Vs. the computer, you will try to beat the implementation of minimax algorithem.
 
 ## Minimax algorithem
