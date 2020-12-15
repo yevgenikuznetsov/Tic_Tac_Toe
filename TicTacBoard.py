@@ -3,44 +3,37 @@ from tkinter import messagebox
 from TicTacToeButton import *
 from MinimaxAlphaBetaAgent import MinimaxAlphaBetaAgent
 
-#when click on ecupied cell, undo delets one cell
-#when you exit game board, you cant create new one
+
 class TicTacBoard:
 
-    def __init__(self, gameWindow,game_mode):
-
+    def __init__(self, game_window, game_mode):
         self.game_mode = game_mode
 
-        self.newGame = Button(gameWindow, text="New Game", font=("Helvetica", 10),anchor="n", padx=2, pady=10, bg="SystemButtonFace", command=lambda: self.playNewGame())
-        self.undoB = Button(gameWindow, text="Undo", font=("Helvetica", 10), padx=10,anchor="n", pady=10,bg="SystemButtonFace", command=lambda: self.undoPerson(game_mode) ,state="disable")
-        self.playerTurnLable = Label(gameWindow, text="X's turn")
-
+        self.newGame = Button(game_window, text="New Game", font=("Helvetica", 10), anchor="n", padx=2, pady=10, bg="SystemButtonFace", command=lambda: self.playNewGame())
+        self.undoB = Button(game_window, text="Undo", font=("Helvetica", 10), padx=10, anchor="n", pady=10, bg="SystemButtonFace", command=lambda: self.undoPerson(game_mode), state="disable")
+        self.player_turn_lab = Label(game_window, text="X's turn")
 
         self.buttonMatrix = [[0 for row in range(3)] for col in range(3)]
 
         for row in range(3):
             for col in range(3):
-                self.buttonMatrix[row][col] =TicTacButton(Button(gameWindow, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda row=row, col=col:self.b_click(row, col)),Mark.EMPTY)
-
+                self.buttonMatrix[row][col] = TicTacButton(Button(game_window, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda row=row, col=col:self.b_click(row, col)), Mark.EMPTY)
 
         self.locationOnScreen()
 
         self.turnToPlay = Mark.X
         self.moves = []
         self.count = 0
-        #undo - only one step
         self.numOfUndoFirst = 0
         self.numOfUndoSecond = 0
         self.agent = MinimaxAlphaBetaAgent()
 
     def undo(self, mark):
-        lastMove = self.moves.pop()
-        self.deleteStep(lastMove)
+        last_move = self.moves.pop()
+        self.deleteStep(last_move)
         self.turnToPlay = mark
 
     def undoBoardAI(self):
-        self.count -= 1
-
         if self.get_turn_to_play() == Mark.X:
             self.undo(Mark.O)
 
@@ -48,7 +41,6 @@ class TicTacBoard:
             self.undo(Mark.X)
 
     def undoPerson(self, state):
-
         self.count -= 1
         if self.count == 0:
             self.undoB.config(state="disable")
@@ -61,7 +53,7 @@ class TicTacBoard:
                 else:
                     self.undo(Mark.O)
 
-                    self.playerTurnLable.config(text="O's turn")
+                    self.player_turn_lab.config(text="O's turn")
                     self.numOfUndoFirst += 1
             else:
                 if self.numOfUndoFirst >= 1:
@@ -71,7 +63,7 @@ class TicTacBoard:
                     self.undo(Mark.O)
                     self.undo(Mark.X)
 
-                    self.playerTurnLable.config(text="X's turn")
+                    self.player_turn_lab.config(text="X's turn")
                     self.numOfUndoFirst += 1
 
         else:
@@ -80,12 +72,12 @@ class TicTacBoard:
             else:
                 self.undo(Mark.X)
 
-                self.playerTurnLable.config(text="X's turn")
+                self.player_turn_lab.config(text="X's turn")
                 self.numOfUndoSecond += 1
 
-    def deleteStep(self, lastMove):
-        self.buttonMatrix[lastMove[0]][lastMove[1]].button.config(text=" ")
-        self.buttonMatrix[lastMove[0]][lastMove[1]].mark = Mark.EMPTY
+    def deleteStep(self, last_move):
+        self.buttonMatrix[last_move[0]][last_move[1]].button.config(text=" ")
+        self.buttonMatrix[last_move[0]][last_move[1]].mark = Mark.EMPTY
 
     def get_turn_to_play(self):
         return self.turnToPlay
@@ -96,19 +88,18 @@ class TicTacBoard:
                 self.buttonMatrix[i][j].button.grid(row =i, column=j)
 
         self.newGame.grid(row=3, column=0)
-        self.playerTurnLable.grid(row=3, column=1)
+        self.player_turn_lab.grid(row=3, column=1)
         self.undoB.grid(row=3, column=2)
 
     def get_possible_moves(self):
-        possibleMoves = []
+        possible_moves = []
         for x in range(0, 3):
             for y in range(0, 3):
                 if self.buttonMatrix[x][y].mark is Mark.EMPTY:
-                    possibleMoves.append((x, y))
-        return possibleMoves
+                    possible_moves.append((x, y))
+        return possible_moves
 
     def checkIfWin(self):
-
         if self.buttonMatrix[0][0].mark== self.buttonMatrix[1][1].mark == self.buttonMatrix[2][2].mark and self.buttonMatrix[0][0].mark !=Mark.EMPTY:
             if self.get_turn_to_play()==Mark.X:
                 return 10
@@ -139,6 +130,7 @@ class TicTacBoard:
         for row in range(3):
             for col in range(3):
                 self.buttonMatrix[row][col].button.config(state="disable")
+
     def playNewGame(self):
         for row in range(3):
             for col in range(3):
@@ -146,93 +138,73 @@ class TicTacBoard:
                 self.buttonMatrix[row][col].mark = Mark.EMPTY
 
         self.undoB.config(state="disable")
-        self.playerTurnLable.config(text="X's turn")
+        self.player_turn_lab.config(text="X's turn")
 
         self.count = 0
         self.turnToPlay = Mark.X
         self.numOfUndoSecond = 0
         self.numOfUndoFirst = 0
 
-
-
-    def two_player_mode_click_dummy(self, row, col):
-
-        if self.buttonMatrix[row][col].mark==Mark.EMPTY:
+    def two_player_mode_click(self, row, col, ai):
+        if self.buttonMatrix[row][col].mark == Mark.EMPTY:
             if self.get_turn_to_play() == Mark.X:
 
-                self.buttonMatrix[row][col].mark= Mark.X
+                if ai == 0:
+                    self.buttonMatrix[row][col].button["text"] = "X"
+                    self.count += 1
+
+                self.buttonMatrix[row][col].mark = Mark.X
 
                 self.moves.append([row, col])
-
                 self.turnToPlay = Mark.O
-
-                self.playerTurnLable.config(text="O's turn")
-                self.count += 1
+                self.player_turn_lab.config(text="O's turn")
 
             elif self.get_turn_to_play() == Mark.O:
+                if ai == 0:
+                    self.buttonMatrix[row][col].button["text"] = "O"
+                    self.count += 1
 
                 self.buttonMatrix[row][col].mark = Mark.O
                 self.moves.append([ row, col])
-
                 self.turnToPlay = Mark.X
-                self.playerTurnLable.config(text="X's turn")
-                self.count += 1
+                self.player_turn_lab.config(text="X's turn")
 
         else:
             messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
-        # need to add tie
-
-
-
-    def two_player_mode_click(self, row, col):
-
-        if self.buttonMatrix[row][col].mark==Mark.EMPTY:
-            if self.get_turn_to_play() == Mark.X:
-                self.buttonMatrix[row][col].button["text"] = "X"
-                self.buttonMatrix[row][col].mark= Mark.X
-
-                self.moves.append([row, col])
-
-                self.turnToPlay = Mark.O
-                self.playerTurnLable.config(text="O's turn")
-                self.count += 1
-
-            elif self.get_turn_to_play() == Mark.O:
-                self.buttonMatrix[row][col].button["text"] = "O"
-                self.buttonMatrix[row][col].mark = Mark.O
-                self.moves.append([ row, col])
-
-                self.turnToPlay = Mark.X
-                self.playerTurnLable.config(text="X's turn")
-                self.count += 1
-
-        else:
-            messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
-        # need to add tie
 
     def one_player_mode_click(self,  row, col):
-        self.two_player_mode_click(row, col)
+        self.two_player_mode_click(row, col,0)
         self.undoB.config(state="normal")
-        move = self.agent.choose(self,9-self.count, True)[0]
-        self.two_player_mode_click(move[0],move[1])
+
+        if self.count == 9:
+            messagebox.showerror("Tic Tac Toe", "There is no winner")
+            self.turnOffButtons()
+        else:
+            move = self.agent.choose(self, 9 - self.count, True)[0]
+            self.two_player_mode_click(move[0],move[1],0)
+
+            self.IsWin()
 
     def b_click(self, row, col):
         if self.game_mode == 2:
-            self.two_player_mode_click( row, col)
+            self.two_player_mode_click( row, col,0)
 
             self.undoB.config(state="normal")
 
-            if self.checkIfWin() != 0:
-                if self.get_turn_to_play() == Mark.X:
-                    messagebox.showerror("Tic Tac Toe", "O Win")
-                    self.turnOffButtons()
-                else:
-                    messagebox.showerror("Tic Tac Toe", "X Win")
-                    self.turnOffButtons()
+            self.IsWin()
 
             if self.count == 9:
                 messagebox.showerror("Tic Tac Toe", "There is no winner")
                 self.turnOffButtons()
         else:
-            self.one_player_mode_click( row, col)
+            self.one_player_mode_click(row, col)
+
+    def IsWin(self):
+        if self.checkIfWin() != 0:
+            if self.get_turn_to_play() == Mark.X:
+                messagebox.showerror("Tic Tac Toe", "O Win")
+                self.turnOffButtons()
+            else:
+                messagebox.showerror("Tic Tac Toe", "X Win")
+                self.turnOffButtons()
 
