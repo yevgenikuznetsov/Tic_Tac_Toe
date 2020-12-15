@@ -12,6 +12,7 @@ mainWindowLabel = Label(mainWindow,font= " none 30 bold", text="Tic Tac Toe", pa
 
 windowsHandler = WindowsHandler()
 
+
 playWithComp = Button(mainWindow, text = "PLAY WITH COMPUTER", padx = 25, pady = 14,command = lambda:  windowsHandler.openNewWindow(ONE_PLAYER_MODE))
 playWithOther = Button(mainWindow, text = "PLAY WITH OTHER PLAYER", padx = 25, pady = 14,command =lambda: windowsHandler.openNewWindow(TWO_PLAYERS_MODE))
 
