@@ -10,6 +10,14 @@ class MinimaxAlphaBetaAgent():
     def staticEval(self, state):
         return state.score
 
+    // The algorithm maintains two values, alpha and beta, which respectively represent the minimum score that
+    // the maximizing player is assured of and the maximum score that the minimizing player is assured of.
+    // state – Current move of player  
+    // depth – Scanning depth
+    // alpha – Initially, alpha is negative infinity
+    // beta – Initially, beta is positive infinity
+    // isMax – max player
+
     def minimax_alpha_beta(self, state, depth, alpha, beta, isMax):
         if state.checkIfWin() or depth is 0:
             return -1,  state.checkIfWin()- depth
