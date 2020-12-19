@@ -100,22 +100,26 @@ class TicTacBoard:
         return possible_moves
 
     def checkIfWin(self):
+           // Check Main diagonal
         if self.buttonMatrix[0][0].mark== self.buttonMatrix[1][1].mark == self.buttonMatrix[2][2].mark and self.buttonMatrix[0][0].mark !=Mark.EMPTY:
             if self.get_turn_to_play()==Mark.X:
                 return 10
             else:
                 return -10
+            // Check Secondary diagonal
         if self.buttonMatrix[0][2].mark == self.buttonMatrix[1][1].mark == self.buttonMatrix[2][0].mark and self.buttonMatrix[0][2].mark != Mark.EMPTY:
             if self.get_turn_to_play() == Mark.X:
                 return 10
             else:
                 return -10
         for i in range(0, 3):
+            // Check Column
             if self.buttonMatrix[i][0].mark == self.buttonMatrix[i][1].mark == self.buttonMatrix[i][2].mark and self.buttonMatrix[i][0].mark !=Mark.EMPTY:
                 if self.get_turn_to_play() == Mark.X:
                     return 10
                 else:
                     return -10
+              // Check Row
             if self.buttonMatrix[0][i].mark == self.buttonMatrix[1][i].mark == self.buttonMatrix[2][i].mark and self.buttonMatrix[0][i].mark !=Mark.EMPTY:
                 if self.get_turn_to_play() == Mark.X:
                     return 10
