@@ -28,13 +28,9 @@ class TicTacBoard:
         self.numOfUndoSecond = 0
         self.agent = MinimaxAlphaBetaAgent()
 
-     // Function to perform "UNDO" operation
     def undo(self, mark):
-        // Stores and Erase top element of the stack
         last_move = self.moves.pop()
-        // Erase the move from game board 
         self.deleteStep(last_move)
-        // The playet choose new move to make
         self.turnToPlay = mark
 
     def undoBoardAI(self):
@@ -50,9 +46,7 @@ class TicTacBoard:
             self.undoB.config(state="disable")
 
         if self.get_turn_to_play() == Mark.X:
-            // Player Vs Player mode
             if self.game_mode == 2:
-                // Check if the player commit 'UNDO' more that 3 times 
                 if self.numOfUndoFirst >= 3:
                     messagebox.showerror("Tic Tac Toe", "You can't do undo more than 3 times")
                     self.undoB.config(state="disable")
@@ -61,9 +55,7 @@ class TicTacBoard:
 
                     self.player_turn_lab.config(text="O's turn")
                     self.numOfUndoFirst += 1
-           // Player Vs Computer mode
             else:
-                // Check if the player 'X' commit 'UNDO' already
                 if self.numOfUndoFirst >= 1:
                     messagebox.showerror("Tic Tac Toe", "You can't do undo more than 1 times")
                     self.undoB.config(state="disable")
@@ -73,7 +65,6 @@ class TicTacBoard:
 
                     self.player_turn_lab.config(text="X's turn")
                     self.numOfUndoFirst += 1
-        // Check if the player 'O' commit 'UNDO' already
         else:
             if self.numOfUndoSecond >= 3:
                 messagebox.showerror("Tic Tac Toe", "You can't do undo more than 3 times")
@@ -83,7 +74,6 @@ class TicTacBoard:
                 self.player_turn_lab.config(text="X's turn")
                 self.numOfUndoSecond += 1
 
-    // Function to delete move from board
     def deleteStep(self, last_move):
         self.buttonMatrix[last_move[0]][last_move[1]].button.config(text=" ")
         self.buttonMatrix[last_move[0]][last_move[1]].mark = Mark.EMPTY
@@ -109,26 +99,22 @@ class TicTacBoard:
         return possible_moves
 
     def checkIfWin(self):
-           // Check Main diagonal
         if self.buttonMatrix[0][0].mark== self.buttonMatrix[1][1].mark == self.buttonMatrix[2][2].mark and self.buttonMatrix[0][0].mark !=Mark.EMPTY:
             if self.get_turn_to_play()==Mark.X:
                 return 10
             else:
                 return -10
-            // Check Secondary diagonal
         if self.buttonMatrix[0][2].mark == self.buttonMatrix[1][1].mark == self.buttonMatrix[2][0].mark and self.buttonMatrix[0][2].mark != Mark.EMPTY:
             if self.get_turn_to_play() == Mark.X:
                 return 10
             else:
                 return -10
         for i in range(0, 3):
-            // Check Column
             if self.buttonMatrix[i][0].mark == self.buttonMatrix[i][1].mark == self.buttonMatrix[i][2].mark and self.buttonMatrix[i][0].mark !=Mark.EMPTY:
                 if self.get_turn_to_play() == Mark.X:
                     return 10
                 else:
                     return -10
-              // Check Row
             if self.buttonMatrix[0][i].mark == self.buttonMatrix[1][i].mark == self.buttonMatrix[2][i].mark and self.buttonMatrix[0][i].mark !=Mark.EMPTY:
                 if self.get_turn_to_play() == Mark.X:
                     return 10
