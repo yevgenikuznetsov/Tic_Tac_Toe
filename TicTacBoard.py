@@ -91,6 +91,11 @@ class TicTacBoard:
         self.undoB.grid(row=3, column=2)
 
     def get_possible_moves(self):
+          """Find all valid next moves
+                Return
+                ------
+               possible_moves: List of moves in int[2] of {row, col} or empty list if gameover
+                """
         possible_moves = []
         for x in range(0, 3):
             for y in range(0, 3):
