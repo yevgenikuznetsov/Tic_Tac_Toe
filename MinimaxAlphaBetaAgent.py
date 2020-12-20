@@ -16,7 +16,7 @@ class MinimaxAlphaBetaAgent():
                 state : TicTacToeBoard
                     The current state of the board
                 depth : number
-                    the number of playable cells in the current board
+                    of this node from the start of the minimax search
 
                 alpha : TicTacToeBoard
                     The current state of the board
