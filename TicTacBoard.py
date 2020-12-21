@@ -91,11 +91,12 @@ class TicTacBoard:
         self.undoB.grid(row=3, column=2)
 
     def get_possible_moves(self):
-          """Find all valid next moves
-                Return
-                ------
-               possible_moves: List of moves in int[2] of {row, col} or empty list if gameover
-                """
+          """
+          Find all valid next moves
+          
+          Returns:
+          int[2]: possible_moves, List of moves in int[2] of {row, col} or empty list if gameover
+          """
         possible_moves = []
         for x in range(0, 3):
             for y in range(0, 3):
@@ -104,6 +105,15 @@ class TicTacBoard:
         return possible_moves
 
     def checkIfWin(self):
+         """
+         The function has all the winning combinations. All it does is,
+         it checks whether any of the winning combinations is satisfied by the current player’s positions.
+          
+         Returns:
+         int: The score of the board 
+              (10) - The maximizer has upper hand
+              (-10) - The minimizer has upper hand    
+         """
         if self.buttonMatrix[0][0].mark== self.buttonMatrix[1][1].mark == self.buttonMatrix[2][2].mark and self.buttonMatrix[0][0].mark !=Mark.EMPTY:
             if self.get_turn_to_play()==Mark.X:
                 return 10
@@ -128,6 +138,9 @@ class TicTacBoard:
         return 0
 
     def __switch_players(self):
+        """
+        The function switch the current player, after every successful move
+        """
         self.turnToPlay = Mark.X if self.turnToPlay is Mark.O else Mark.O
 
     def turnOffButtons(self):
@@ -136,6 +149,9 @@ class TicTacBoard:
                 self.buttonMatrix[row][col].button.config(state="disable")
 
     def playNewGame(self):
+         """
+         The function creates tic-tac-toe game board    
+         """
         for row in range(3):
             for col in range(3):
                 self.buttonMatrix[row][col].button.config(text=" ", state="normal")
@@ -150,6 +166,14 @@ class TicTacBoard:
         self.numOfUndoFirst = 0
 
     def two_player_mode_click(self, row, col, ai):
+        """
+        
+        
+        Parameters:
+        row (int): 
+        col (int): 
+        ai (int): 
+        """
         if self.buttonMatrix[row][col].mark == Mark.EMPTY:
             if self.get_turn_to_play() == Mark.X:
 
@@ -190,6 +214,13 @@ class TicTacBoard:
             self.IsWin()
 
     def b_click(self, row, col):
+         """
+        The function  
+        
+        Parameters:
+        row (int): 
+        col (int):  
+        """
         if self.game_mode == 2:
             self.two_player_mode_click( row, col,0)
 
@@ -204,6 +235,9 @@ class TicTacBoard:
             self.one_player_mode_click(row, col)
 
     def IsWin(self):
+        """
+        The function announces the winner of the game
+        """
         if self.checkIfWin() != 0:
             if self.get_turn_to_play() == Mark.X:
                 messagebox.showerror("Tic Tac Toe", "O Win")
