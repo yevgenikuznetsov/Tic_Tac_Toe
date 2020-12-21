@@ -13,17 +13,17 @@ class MinimaxAlphaBetaAgent():
         It consider the current state of the game and the available moves at that state,
         then for each valid move it plays (alternating min and max) until it finds a terminal state
         
-         Parameters:
-         state (): The current state of the board
-         depth (int): Of this node from the start of the minimax search
-         alpha (int): The minimum score that the maximizing player is assured of 
-         beta (int): The maximum score that the minimizing player is assured of
-         isMax ():         
+        Parameters:
+        state (): The current state of the board
+        depth (int): Of this node from the start of the minimax search
+        alpha (int): The minimum score that the maximizing player is assured of 
+        beta (int): The maximum score that the minimizing player is assured of
+        isMax ():         
 
-         Returns:
+        Returns:
         (int,(int,int)): bestValue[0] : the best value that found
                          bestValue[1] : the position of the best value
-         """
+        """
         if state.checkIfWin() or depth is 0:
             return -1,  state.checkIfWin()- depth 
         if isMax:
@@ -51,14 +51,16 @@ class MinimaxAlphaBetaAgent():
 
     def choose(self, state,depth, player):
         """
+        Choosing the best move to take, the move which has the maximum score when it is the AI’s turn 
+        and choosing the minimum score when it is the Human’s turn.
         
-         Parameters:
-         state (): The current state of the board
-         depth (int): of this node from the start of the minimax search
-         player (): 
+        Parameters:
+        state (): The current state of the board
+        depth (int): of this node from the start of the minimax search
+        player (): 
          
-         Returns:
-         minimax_alpha_beta: The best value that found and the position of the best value
-         """
+        Returns:
+        minimax_alpha_beta: The best value that found and the position of the best value
+        """
         return self.minimax_alpha_beta(state, depth, -inf, inf, player)
 
