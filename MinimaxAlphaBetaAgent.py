@@ -8,31 +8,22 @@ class MinimaxAlphaBetaAgent():
         return
 
     def minimax_alpha_beta(self, state, depth, alpha, beta, isMax):
-        """search, recursively, the best move that leads the Max player to win or not lose (draw).
+        """
+        Search, recursively, the best move that leads the Max player to win or not lose (draw).
         It consider the current state of the game and the available moves at that state,
         then for each valid move it plays (alternating min and max) until it finds a terminal state
-                Parameters
-                ----------
-                state : TicTacToeBoard
-                    The current state of the board
-                depth : number
-                    of this node from the start of the minimax search
+        
+         Parameters:
+         state (): The current state of the board
+         depth (int): of this node from the start of the minimax search
+         alpha (int): 
+         beta (int): 
+         isMax ():         
 
-                alpha : TicTacToeBoard
-                    The current state of the board
-                beta : TicTacToeBoard
-                    The current state of the board
-
-
-                isMax : bool
-                    True if
-
-                Return
-                ------
-               bestValue: (number,(number,number))
-                    bestValue[0] : the best value that found
-                    bestValue[1] : the position of the best value
-                """
+         Returns:
+        (int,(int,int)): bestValue[0] : the best value that found
+                         bestValue[1] : the position of the best value
+         """
         if state.checkIfWin() or depth is 0:
             return -1,  state.checkIfWin()- depth 
         if isMax:
