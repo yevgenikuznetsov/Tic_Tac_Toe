@@ -15,9 +15,9 @@ class MinimaxAlphaBetaAgent():
         
          Parameters:
          state (): The current state of the board
-         depth (int): of this node from the start of the minimax search
-         alpha (int): 
-         beta (int): 
+         depth (int): Of this node from the start of the minimax search
+         alpha (int): The minimum score that the maximizing player is assured of 
+         beta (int): The maximum score that the minimizing player is assured of
          isMax ():         
 
          Returns:
@@ -50,5 +50,15 @@ class MinimaxAlphaBetaAgent():
         return bestValue
 
     def choose(self, state,depth, player):
+        """
+        
+         Parameters:
+         state (): The current state of the board
+         depth (int): of this node from the start of the minimax search
+         player (): 
+         
+         Returns:
+         minimax_alpha_beta: The best value that found and the position of the best value
+         """
         return self.minimax_alpha_beta(state, depth, -inf, inf, player)
 
