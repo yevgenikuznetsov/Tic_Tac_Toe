@@ -60,7 +60,7 @@ class MinimaxAlphaBetaAgent():
         Parameters:
         state (): The current state of the board
         depth (int): of this node from the start of the minimax search
-        player (): 
+        player (boolean): The Max player or Min player  
          
         Returns:
         minimax_alpha_beta: The best value that found and the position of the best value
