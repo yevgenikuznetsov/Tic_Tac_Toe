@@ -7,6 +7,13 @@ from MinimaxAlphaBetaAgent import MinimaxAlphaBetaAgent
 class TicTacBoard:
 
     def __init__(self, game_window, game_mode):
+        """ 
+        The constructor for TicTacBoard class. 
+  
+        Parameters: 
+         game_window (WindowsHandler): New tic-tac-toe game board 
+         game_mode (int): Player vs Player mode OR Player vs Computer mode    
+        """
         self.game_mode = game_mode
 
         self.newGame = Button(game_window, text="New Game", font=("Helvetica", 10), anchor="n", padx=2, pady=10, bg="SystemButtonFace", command=lambda: self.playNewGame())
