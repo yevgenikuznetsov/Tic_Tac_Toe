@@ -5,6 +5,9 @@ from TicTacBoard import *
 class MinimaxAlphaBetaAgent():
 
     def __init__(self):
+        """ 
+        The constructor for MinimaxAlphaBetaAgent class. 
+        """
         return
 
     def minimax_alpha_beta(self, state, depth, alpha, beta, isMax):
@@ -14,11 +17,11 @@ class MinimaxAlphaBetaAgent():
         then for each valid move it plays (alternating min and max) until it finds a terminal state
         
         Parameters:
-        state (): The current state of the board
+        state (TicTacBoard): The current state of the board
         depth (int): Of this node from the start of the minimax search
         alpha (int): The minimum score that the maximizing player is assured of 
         beta (int): The maximum score that the minimizing player is assured of
-        isMax ():         
+        isMax (boolean): The Max player or Min player  
 
         Returns:
         (int,(int,int)): bestValue[0] : the best value that found
