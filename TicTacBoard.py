@@ -29,6 +29,12 @@ class TicTacBoard:
         self.agent = MinimaxAlphaBetaAgent()
 
     def undo(self, mark):
+        """
+        The function reverses the last move
+        
+        Parameters:
+        mark (Mark): The player that has to do move again 
+        """
         last_move = self.moves.pop()
         self.deleteStep(last_move)
         self.turnToPlay = mark
@@ -75,11 +81,24 @@ class TicTacBoard:
                 self.numOfUndoSecond += 1
 
     def deleteStep(self, last_move):
+         """
+        The function deletes the last move made from the tic-tac-toe game board 
+        
+        Parameters:
+        last_move (int[2]): The last move made on tic-tac-toe game board 
+        """
         self.buttonMatrix[last_move[0]][last_move[1]].button.config(text=" ")
         self.buttonMatrix[last_move[0]][last_move[1]].mark = Mark.EMPTY
 
     def get_turn_to_play(self):
-        return self.turnToPlay
+        return self.turnToPlay  """
+        The function 
+        
+        Parameters:
+        row (int): row value of the position of player’s move
+        col (int): column value of the position of player’s move
+        ai (int): 
+        """
 
     def locationOnScreen(self):
         for i in range(3):
@@ -139,11 +158,14 @@ class TicTacBoard:
 
     def __switch_players(self):
         """
-        The function switch the current player, after every successful move
+        The function switchs the current player, after every successful move
         """
         self.turnToPlay = Mark.X if self.turnToPlay is Mark.O else Mark.O
 
     def turnOffButtons(self):
+         """
+         The function disables the buttons after the game is over   
+         """
         for row in range(3):
             for col in range(3):
                 self.buttonMatrix[row][col].button.config(state="disable")
@@ -167,11 +189,11 @@ class TicTacBoard:
 
     def two_player_mode_click(self, row, col, ai):
         """
-        
+        The function 
         
         Parameters:
-        row (int): 
-        col (int): 
+        row (int): row value of the position of player’s move
+        col (int): column value of the position of player’s move
         ai (int): 
         """
         if self.buttonMatrix[row][col].mark == Mark.EMPTY:
@@ -201,6 +223,13 @@ class TicTacBoard:
             messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
 
     def one_player_mode_click(self,  row, col):
+        """
+        The function 
+        
+        Parameters:
+        row (int): row value of the position of player’s move
+        col (int): column value of the position of player’s move
+        """
         self.two_player_mode_click(row, col,0)
         self.undoB.config(state="normal")
 
@@ -214,12 +243,12 @@ class TicTacBoard:
             self.IsWin()
 
     def b_click(self, row, col):
-         """
-        The function  
+        """
+        The function recognizes the position of player’s move
         
         Parameters:
-        row (int): 
-        col (int):  
+        row (int): row value of the position of player’s move
+        col (int): column value of the position of player’s move
         """
         if self.game_mode == 2:
             self.two_player_mode_click( row, col,0)
