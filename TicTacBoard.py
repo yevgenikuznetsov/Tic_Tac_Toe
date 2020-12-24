@@ -1,4 +1,4 @@
-dfrom tkinter import *
+from tkinter import *
 from tkinter import messagebox
 from TicTacToeButton import *
 from MinimaxAlphaBetaAgent import MinimaxAlphaBetaAgent
@@ -34,6 +34,7 @@ class TicTacBoard:
         self.numOfUndoFirst = 0
         self.numOfUndoSecond = 0
         self.agent = MinimaxAlphaBetaAgent()
+        self.win = False
 
     def undo(self, mark):
         """
@@ -88,7 +89,7 @@ class TicTacBoard:
                 self.numOfUndoSecond += 1
 
     def deleteStep(self, last_move):
-         """
+        """
         The function deletes the last move made from the tic-tac-toe game board 
         
         Parameters:
@@ -98,7 +99,8 @@ class TicTacBoard:
         self.buttonMatrix[last_move[0]][last_move[1]].mark = Mark.EMPTY
 
     def get_turn_to_play(self):
-        return self.turnToPlay  """
+        return self.turnToPlay
+        """
         The function 
         
         Parameters:
@@ -106,6 +108,7 @@ class TicTacBoard:
         col (int): column value of the position of player’s move
         ai (int): 
         """
+
 
     def locationOnScreen(self):
         for i in range(3):
@@ -117,12 +120,12 @@ class TicTacBoard:
         self.undoB.grid(row=3, column=2)
 
     def get_possible_moves(self):
-          """
-          Find all valid next moves
+        """
+        Find all valid next moves
           
-          Returns:
-          int[2]: possible_moves, List of moves in int[2] of {row, col} or empty list if gameover
-          """
+        Returns:
+        int[2]: possible_moves, List of moves in int[2] of {row, col} or empty list if gameover
+        """
         possible_moves = []
         for x in range(0, 3):
             for y in range(0, 3):
@@ -131,15 +134,15 @@ class TicTacBoard:
         return possible_moves
 
     def checkIfWin(self):
-         """
-         The function has all the winning combinations. All it does is,
-         it checks whether any of the winning combinations is satisfied by the current player’s positions.
+        """
+        The function has all the winning combinations. All it does is,
+        it checks whether any of the winning combinations is satisfied by the current player’s positions.
           
-         Returns:
-         int: The score of the board 
-              (10) - The maximizer has upper hand
-              (-10) - The minimizer has upper hand    
-         """
+        Returns:
+        int: The score of the board
+            (10) - The maximizer has upper hand
+            (-10) - The minimizer has upper hand
+        """
         if self.buttonMatrix[0][0].mark== self.buttonMatrix[1][1].mark == self.buttonMatrix[2][2].mark and self.buttonMatrix[0][0].mark !=Mark.EMPTY:
             if self.get_turn_to_play()==Mark.X:
                 return 10
@@ -170,17 +173,17 @@ class TicTacBoard:
         self.turnToPlay = Mark.X if self.turnToPlay is Mark.O else Mark.O
 
     def turnOffButtons(self):
-         """
-         The function disables the buttons after the game is over   
-         """
+        """
+        The function disables the buttons after the game is over
+        """
         for row in range(3):
             for col in range(3):
                 self.buttonMatrix[row][col].button.config(state="disable")
 
     def playNewGame(self):
-         """
-         The function creates tic-tac-toe game board    
-         """
+        """
+        The function creates tic-tac-toe game board
+        """
         for row in range(3):
             for col in range(3):
                 self.buttonMatrix[row][col].button.config(text=" ", state="normal")
@@ -264,9 +267,10 @@ class TicTacBoard:
 
             self.IsWin()
 
-            if self.count == 9:
-                messagebox.showerror("Tic Tac Toe", "There is no winner")
-                self.turnOffButtons()
+            if not self.win:
+                if self.count == 9:
+                    messagebox.showerror("Tic Tac Toe", "There is no winner")
+                    self.turnOffButtons()
         else:
             self.one_player_mode_click(row, col)
 
@@ -275,6 +279,8 @@ class TicTacBoard:
         The function announces the winner of the game
         """
         if self.checkIfWin() != 0:
+            self.win = True
+
             if self.get_turn_to_play() == Mark.X:
                 messagebox.showerror("Tic Tac Toe", "O Win")
                 self.turnOffButtons()

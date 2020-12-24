@@ -6,7 +6,7 @@ class Mark(Enum):
     EMPTY = 8
 
 class TicTacButton:
-    def __init__(self, button,mark):
+    def __init__(self, button, mark):
         """ 
         The constructor for TicTacButton class.     
         
