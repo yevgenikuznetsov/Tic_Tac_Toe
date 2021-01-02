@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import messagebox
 from TicTacToeButton import *
 from MinimaxAlphaBetaAgent import MinimaxAlphaBetaAgent
 
@@ -17,8 +16,13 @@ class TicTacBoard:
         self.game_mode = game_mode
 
         self.newGame = Button(game_window, text="New Game", font=("Helvetica", 10), anchor="n", padx=2, pady=10, bg="SystemButtonFace", command=lambda: self.playNewGame())
-        self.undoB = Button(game_window, text="Undo", font=("Helvetica", 10), padx=10, anchor="n", pady=10, bg="SystemButtonFace", command=lambda: self.undoPerson(game_mode), state="disable")
+        self.undoB = Button(game_window, text="Undo", font=("Helvetica", 10), padx=10, anchor="n", pady=10, bg="SystemButtonFace", command=lambda: self.undoPerson(), state="disable")
         self.player_turn_lab = Label(game_window, text="X's turn")
+        self.massage = Label(game_window, text="")
+
+        self.question = Label(game_window, text="You want to start?")
+        self.yes = Button(game_window, text="Yes", command=lambda: self.start_play_with_pc(1))
+        self.no = Button(game_window, text="No", command=lambda: self.start_play_with_pc(0))
 
         self.buttonMatrix = [[0 for row in range(3)] for col in range(3)]
 
@@ -26,7 +30,7 @@ class TicTacBoard:
             for col in range(3):
                 self.buttonMatrix[row][col] = TicTacButton(Button(game_window, text=" ", font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace", command=lambda row=row, col=col:self.b_click(row, col)), Mark.EMPTY)
 
-        self.locationOnScreen()
+        self.locationOnScreen(game_mode)
 
         self.turnToPlay = Mark.X
         self.moves = []
@@ -35,6 +39,7 @@ class TicTacBoard:
         self.numOfUndoSecond = 0
         self.agent = MinimaxAlphaBetaAgent()
         self.win = False
+        self.firstPlayer = 0
 
     def undo(self, mark):
         """
@@ -47,46 +52,100 @@ class TicTacBoard:
         self.deleteStep(last_move)
         self.turnToPlay = mark
 
+    def start_play_with_pc(self, turn):
+        """
+            Window setting for a game pc vs player
+            If the computer starts the game, His first move was made here
+        Parameters:
+            turn (int): the user value if he want to play first in the game with pc
+        """
+        self.firstPlayer = turn
+
+        self.yes.grid_forget()
+        self.no.grid_forget()
+
+        for row in range(3):
+            for col in range(3):
+                self.buttonMatrix[row][col].button.config(text=" ", state="normal")
+
+        if self.firstPlayer == 0:
+
+            self.question.config(text="X-PC, O-You")
+
+            move = self.agent.choose(self, 9 - self.count, False)[0]
+            self.two_player_mode_click(move[0], move[1], 0)
+        else:
+            self.question.config(text="O-PC, X-You")
+
+        self.question.grid(row=0, column=1)
+
     def undoBoardAI(self):
+        """
+            The minimax algorithm uses this function, to find best move
+        """
         if self.get_turn_to_play() == Mark.X:
             self.undo(Mark.O)
 
         else:
             self.undo(Mark.X)
 
-    def undoPerson(self, state):
-        self.count -= 1
+    def undoPerson(self):
+        """
+            Create undo after the users press on undo button
+        """
         if self.count == 0:
             self.undoB.config(state="disable")
 
         if self.get_turn_to_play() == Mark.X:
             if self.game_mode == 2:
-                if self.numOfUndoFirst >= 3:
-                    messagebox.showerror("Tic Tac Toe", "You can't do undo more than 3 times")
-                    self.undoB.config(state="disable")
-                else:
-                    self.undo(Mark.O)
-
-                    self.player_turn_lab.config(text="O's turn")
-                    self.numOfUndoFirst += 1
+                self.check_and_undo_for_person_game(self.numOfUndoFirst, Mark.O, "O's turn")
+                self.numOfUndoFirst += 1
             else:
-                if self.numOfUndoFirst >= 1:
-                    messagebox.showerror("Tic Tac Toe", "You can't do undo more than 1 times")
-                    self.undoB.config(state="disable")
-                else:
-                    self.undo(Mark.O)
-                    self.undo(Mark.X)
-
-                    self.player_turn_lab.config(text="X's turn")
-                    self.numOfUndoFirst += 1
+                self.check_and_undo_for_pc_game(self.numOfUndoFirst, Mark.O, Mark.X, "X's turn")
+                self.numOfUndoFirst += 1
         else:
-            if self.numOfUndoSecond >= 3:
-                messagebox.showerror("Tic Tac Toe", "You can't do undo more than 3 times")
-            else:
-                self.undo(Mark.X)
-
-                self.player_turn_lab.config(text="X's turn")
+            if self.game_mode == 2:
+                self.check_and_undo_for_person_game(self.numOfUndoSecond, Mark.X, "X's turn")
                 self.numOfUndoSecond += 1
+            else:
+                self.check_and_undo_for_pc_game(self.numOfUndoSecond, Mark.X, Mark.O, "O's turn")
+                self.numOfUndoSecond += 1
+
+    def check_and_undo_for_person_game(self, num_of_undo, mark, text_lable):
+        """
+            The function check if user can do undo in person vs person game
+            If so, the function performs the undo
+        Parameters:
+            num_of_undo (int): The number of times the user press undo
+            mark (int): Represents a user queue
+            text_lable (string): Informer of who's the turn
+        """
+        if num_of_undo >= 3:
+            self.massage.config(text="Impossible move", foreground="red")
+        else:
+            self.count -= 1
+            self.undo(mark)
+
+            self.player_turn_lab.config(text=text_lable)
+
+    def check_and_undo_for_pc_game(self, num_of_undo, first_mark, second_mark, text_lable):
+        """
+            The function check if user can do undo in person vs pc game
+            If so, the function performs the undo
+        Parameters:
+            num_of_undo (int): The number of times the user press undo
+            mark (int): Represents a user queue or pc queue
+            text_lable (string): Informer of who's the turn
+        """
+        if num_of_undo >= 1:
+            self.massage.config(text="Impossible move", foreground="red")
+            self.undoB.config(state="disable")
+        else:
+            self.count -= 2
+            self.undo(first_mark)
+            self.undo(second_mark)
+
+            self.player_turn_lab.config(text=text_lable)
 
     def deleteStep(self, last_move):
         """
@@ -109,15 +168,23 @@ class TicTacBoard:
         ai (int): 
         """
 
+    def locationOnScreen(self, game_mode):
+        if game_mode == 1:
+            self.question.grid(row=0)
 
-    def locationOnScreen(self):
+            self.yes.grid(row=1, column=0)
+            self.no.grid(row=1, column=2)
+
+            self.turnOffButtons()
+
         for i in range(3):
             for j in range(3):
-                self.buttonMatrix[i][j].button.grid(row =i, column=j)
+                self.buttonMatrix[i][j].button.grid(row=i+2, column=j)
 
-        self.newGame.grid(row=3, column=0)
-        self.player_turn_lab.grid(row=3, column=1)
-        self.undoB.grid(row=3, column=2)
+        self.newGame.grid(row=5, column=0)
+        self.player_turn_lab.grid(row=5, column=1)
+        self.undoB.grid(row=5, column=2)
+        self.massage.grid(row=6, column=1)
 
     def get_possible_moves(self):
         """
@@ -191,11 +258,26 @@ class TicTacBoard:
 
         self.undoB.config(state="disable")
         self.player_turn_lab.config(text="X's turn")
+        self.massage.config(text="")
 
         self.count = 0
         self.turnToPlay = Mark.X
         self.numOfUndoSecond = 0
         self.numOfUndoFirst = 0
+
+        self.win = False
+
+        if self.game_mode == 1:
+            self.renew_screen()
+
+    def renew_screen(self):
+        self.question.grid(row=0)
+        self.question.config(text="You want to start?")
+
+        self.yes.grid(row=1, column=0)
+        self.no.grid(row=1, column=2)
+
+        self.turnOffButtons()
 
     def two_player_mode_click(self, row, col, ai):
         """
@@ -206,31 +288,35 @@ class TicTacBoard:
         col (int): column value of the position of player’s move
         ai (int): 
         """
-        if self.buttonMatrix[row][col].mark == Mark.EMPTY:
+        self.massage.config(text="")
+
+        if self.buttonMatrix[row][col].mark is Mark.EMPTY:
             if self.get_turn_to_play() == Mark.X:
+
+                self.buttonMatrix[row][col].mark = Mark.X
 
                 if ai == 0:
                     self.buttonMatrix[row][col].button["text"] = "X"
                     self.count += 1
-
-                self.buttonMatrix[row][col].mark = Mark.X
 
                 self.moves.append([row, col])
                 self.turnToPlay = Mark.O
                 self.player_turn_lab.config(text="O's turn")
 
             elif self.get_turn_to_play() == Mark.O:
+
+                self.buttonMatrix[row][col].mark = Mark.O
+
                 if ai == 0:
                     self.buttonMatrix[row][col].button["text"] = "O"
                     self.count += 1
 
-                self.buttonMatrix[row][col].mark = Mark.O
-                self.moves.append([ row, col])
+                self.moves.append([row, col])
                 self.turnToPlay = Mark.X
                 self.player_turn_lab.config(text="X's turn")
 
         else:
-            messagebox.showerror("Tic Tac Toe", "Hey! That box already been selected")
+            self.massage.config(text="Impossible move", foreground="red")
 
     def one_player_mode_click(self,  row, col):
         """
@@ -240,17 +326,34 @@ class TicTacBoard:
         row (int): row value of the position of player’s move
         col (int): column value of the position of player’s move
         """
-        self.two_player_mode_click(row, col,0)
+        self.two_player_mode_click(row, col, 0)
         self.undoB.config(state="normal")
 
-        if self.count == 9:
-            messagebox.showerror("Tic Tac Toe", "There is no winner")
-            self.turnOffButtons()
-        else:
-            move = self.agent.choose(self, 9 - self.count, True)[0]
-            self.two_player_mode_click(move[0],move[1],0)
-
+        if self.firstPlayer == 0:
+            move = self.agent.choose(self, 9 - self.count, False)[0]
+            self.two_player_mode_click(move[0], move[1], 0)
             self.IsWin()
+
+            if not self.win:
+                self.no_winner()
+
+        else:
+            if not self.no_winner():
+                move = self.agent.choose(self, 9 - self.count, True)[0]
+                self.two_player_mode_click(move[0], move[1], 0)
+                self.IsWin()
+
+
+    def no_winner(self):
+        """
+        Check if the game ends in a draw
+        """
+        if self.count == 9:
+            self.massage.config(text="There is no winner", foreground="red")
+            self.turnOffButtons()
+            self.undoB.config(state="disable")
+
+            return True
 
     def b_click(self, row, col):
         """
@@ -261,16 +364,14 @@ class TicTacBoard:
         col (int): column value of the position of player’s move
         """
         if self.game_mode == 2:
-            self.two_player_mode_click( row, col,0)
+            self.two_player_mode_click(row, col, 0)
 
             self.undoB.config(state="normal")
 
             self.IsWin()
 
             if not self.win:
-                if self.count == 9:
-                    messagebox.showerror("Tic Tac Toe", "There is no winner")
-                    self.turnOffButtons()
+                self.no_winner()
         else:
             self.one_player_mode_click(row, col)
 
@@ -281,10 +382,12 @@ class TicTacBoard:
         if self.checkIfWin() != 0:
             self.win = True
 
+            self.undoB.config(state="disable")
+
             if self.get_turn_to_play() == Mark.X:
-                messagebox.showerror("Tic Tac Toe", "O Win")
+                self.massage.config(text="O Win", foreground="blue")
                 self.turnOffButtons()
             else:
-                messagebox.showerror("Tic Tac Toe", "X Win")
+                self.massage.config(text="X Win", foreground="blue")
                 self.turnOffButtons()
 

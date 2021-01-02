@@ -1,29 +1,53 @@
 from TicTacBoard import *
-from tkinter import messagebox
 import tkinter as tk
 
 
-#####################################################################################################################
-# Singleton Realization:                                                                                            #
-# Once the player has selected the type of game he wants to play it will not be possible to open a new game window. #
-# Only after the player close the game window it will be possible to select another game type or the same type game.#
-#####################################################################################################################
 class WindowsHandler:
-    # The number of instances of the object at a given moment
-    _number_of_times = 0
+    open_windows = 0
+    NUMBER_OF_OPEN_WINDOWS = 1
 
     def __init__(self):
         """ 
         The constructor for WindowsHandler class.     
         """
-        self.moves = []
         self.gameWindow = None
+        self.windowsIsOpen = False
+        self.game_mode = 0
 
-    def close_window(self):
-        WindowsHandler._number_of_times -= 1
+    def close_window(self, massage):
+        """
+        Close secondary window
+
+        Parameters:
+            massage (Lable): Display errors if present on the main screen
+        """
+        self.open_windows -= 1
+        self.windowsIsOpen = False
+        massage.config(text="")
+
         self.gameWindow.destroy()
 
-    def openNewWindow(self, game_mode):
+    def change_window_or_open_new_window(self, game_mode, massage):
+        """
+        The function open now game.
+        Checks if the game in the secondary window is the same as the game the player wants to play
+
+        Parameters:
+            game_mode (int): Player vs Player mode OR Player vs Computer mode
+            massage (Lable): Display errors if present on the main screen
+        """
+        if not self.windowsIsOpen:
+            self.game_mode = game_mode
+            self.openNewWindow(game_mode, massage)
+
+        else:
+            if game_mode != self.game_mode:
+                self.close_window(massage)
+                self.game_mode = game_mode
+
+            self.openNewWindow(game_mode, massage)
+
+    def openNewWindow(self, game_mode, message_lable):
         """ 
         The function create new tic-tac-toe game board depending on the mode of the game 
         (Player vs Player OR Player vs Computer) 
@@ -31,13 +55,15 @@ class WindowsHandler:
         Parameters: 
          game_mode (int): Player vs Player mode OR Player vs Computer mode    
         """
-        if WindowsHandler._number_of_times >= 1:
-            messagebox.showerror("Tic Tac Toe", "You can't open more than one window")
+        self.windowsIsOpen = True
+
+        if self.open_windows >= self.NUMBER_OF_OPEN_WINDOWS:
+            message_lable.config(text="You can't open same game")
         else:
             self.gameWindow = tk.Tk()
-            WindowsHandler._number_of_times += 1
+            self.open_windows += 1
 
-            self.gameWindow.wm_protocol("WM_DELETE_WINDOW", lambda: self.close_window())
+            self.gameWindow.wm_protocol("WM_DELETE_WINDOW", lambda: self.close_window(message_lable))
             self.gameWindow.title("Tic Tac Toe")
 
             TicTacBoard(self.gameWindow, game_mode)
