@@ -317,6 +317,7 @@ class TicTacBoard:
 
         else:
             self.massage.config(text="Impossible move", foreground="red")
+            return False
 
     def one_player_mode_click(self,  row, col):
         """
@@ -326,7 +327,11 @@ class TicTacBoard:
         row (int): row value of the position of player’s move
         col (int): column value of the position of player’s move
         """
-        self.two_player_mode_click(row, col, 0)
+        result = self.two_player_mode_click(row, col, 0)
+
+        if result==False:
+            return
+
         self.undoB.config(state="normal")
 
         if self.firstPlayer == 0:
