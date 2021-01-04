@@ -7,6 +7,7 @@ NUMBER_OF_OPEN_WINDOWS = 1
 mainWindow = Tk()
 mainWindow.title("Tic Tac Toe")
 mainWindow.geometry("470x300+300+100")
+mainWindow.wm_attributes("-topmost", 1)
 
 window_text = ""
 
