@@ -160,12 +160,7 @@ class TicTacBoard:
     def get_turn_to_play(self):
         return self.turnToPlay
         """
-        The function 
-        
-        Parameters:
-        row (int): row value of the position of player’s move
-        col (int): column value of the position of player’s move
-        ai (int): 
+        Get who should play X or O
         """
 
     def locationOnScreen(self, game_mode):
@@ -281,12 +276,12 @@ class TicTacBoard:
 
     def two_player_mode_click(self, row, col, ai):
         """
-        The function 
+        The function performs the selection of the player
         
         Parameters:
         row (int): row value of the position of player’s move
         col (int): column value of the position of player’s move
-        ai (int): 
+        ai (int): Check if the Minimax algorithm use this function
         """
         self.massage.config(text="")
 
@@ -321,7 +316,7 @@ class TicTacBoard:
 
     def one_player_mode_click(self,  row, col):
         """
-        The function 
+        Minimax algorithm calculation the best move on board and then the player chooses his move
         
         Parameters:
         row (int): row value of the position of player’s move
